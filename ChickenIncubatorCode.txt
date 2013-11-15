@@ -1,0 +1,65 @@
+//The Chicken Incubator Code 
+
+#include "DHT.h"
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(12, 11, 5, 4, 3, 2); 
+
+#define DHTPIN A2   // what pin we're connected to
+#define RELAY 7
+// Uncomment whatever type you're using!
+
+#define DHTTYPE DHT11   // DHT 22  (AM2302)
+//
+
+// Connect pin 1 (on the left) of the sensor to +5V
+// Connect pin 2 of the sensor to whatever your DHTPIN is
+// Connect pin 4 (on the right) of the sensor to GROUND
+// Connect a 10K resistor from pin 2 (data) to pin 1 (power) of the sensor
+// This is what I would use, You can choose your own pin
+
+DHT dht(DHTPIN, DHTTYPE);
+
+
+
+void setup() {
+  pinMode(RELAY, OUTPUT);
+  
+  lcd.begin(16,2);
+  Serial.begin(9600); 
+  Serial.println("DHTxx test!");
+  
+  dht.begin();
+}
+
+void loop() {
+  // Reading temperature or humidity takes about 250 milliseconds!
+  // Sensor readings may also be up to 2 seconds 'old' (its a very slow sensor)
+  float h = dht.readHumidity();
+  float t = dht.readTemperature();
+  
+
+  // check if returns are valid, if they are NaN (not a number) then something went wrong!
+  if (isnan(t) || isnan(h)) {
+    lcd.println("Failed to read from DHT");
+  } else {
+    lcd.setCursor(0,1);
+    lcd.print("Humidity: "); 
+    lcd.print(h);
+    lcd.print(" %\t");
+    lcd.setCursor(1,0);
+    lcd.print("Temp: "); 
+    lcd.print(t);
+    lcd.println("*C ");
+       if (t > 25)
+  {
+    digitalWrite(7,HIGH);
+  }
+  else
+  
+  {digitalWrite(7,LOW);
+  }
+  delay(500);
+    
+  }
+}
